@@ -21,25 +21,27 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button8"
+                    android:id="@+id/saveButton"
+                    android:onClick="saveCanvas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="Save" />
 
                 <Button
-                    android:id="@+id/button7"
+                    android:id="@+id/loadButton"
+                    android:onClick="loadCanvas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="Load" />
 
                 <Button
                     android:id="@+id/button6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="Clear" />
             </LinearLayout>
 
             <LinearLayout
@@ -63,7 +65,7 @@
                     android:id="@+id/spinner6"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <Spinner
                     android:id="@+id/spinner5"
@@ -76,14 +78,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="Find Color" />
 
                 <Button
                     android:id="@+id/button4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="Erase" />
             </LinearLayout>
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
