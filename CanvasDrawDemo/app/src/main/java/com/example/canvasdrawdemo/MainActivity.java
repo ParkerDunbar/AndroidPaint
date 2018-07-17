@@ -1,23 +1,36 @@
 package com.example.canvasdrawdemo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.session.PlaybackState;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.text.AttributedCharacterIterator;
 import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private CanvasView customCanvas;
+    SharedPreferences sharedPreferences;
+    String encoded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
         customCanvas.setBackgroundColor(Color.WHITE);
+        sharedPreferences = getSharedPreferences("canvasPref", Context.MODE_PRIVATE);
 
         //Color
         Spinner colorSpinner = (Spinner) findViewById(R.id.color_spinner);
@@ -49,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
-        switch(arg0.getId()){
+        switch (arg0.getId()) {
             case R.id.color_spinner:
                 String color = (String) arg0.getItemAtPosition(position);
                 Log.d("TEST", color);
@@ -68,30 +82,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    public void clearCanvas(View v){
+        if(v.getId() == R.id.clearButton){
+            customCanvas.clearCanvas();
+        }
+    }
+
     public void saveCanvas(View v) {
-        if(v.getId() == R.id.saveButton) {
-            customCanvas.setDrawingCacheEnabled(true);
-            String imgSaved = MediaStore.Images.Media.insertImage(
-                    getApplicationContext().getContentResolver(), customCanvas.getDrawingCache(),
-                    UUID.randomUUID().toString()+".png", "drawing");
-            if(imgSaved!=null){
-                Toast savedToast = Toast.makeText(getApplicationContext(),
-                        "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
-                savedToast.show();
-            }
-            else{
-                Toast unsavedToast = Toast.makeText(getApplicationContext(),
-                        "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
-                unsavedToast.show();
-            }
-            customCanvas.destroyDrawingCache();
+        if (v.getId() == R.id.saveButton) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            customCanvas.mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            encoded = Base64.encodeToString(b, Base64.DEFAULT);
+            editor.putString("Canvas", encoded.toString());
+            editor.commit();
+            Toast.makeText(getApplicationContext(), "Image has been saved", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void loadCanvas(View v) {
-        if(v.getId() == R.id.loadButton) {
-            customCanvas.loadCanvas();
-            Toast.makeText(getApplicationContext(), "Image has been loaded", Toast.LENGTH_LONG).show();
+        if (v.getId() == R.id.loadButton) {
+            encoded = sharedPreferences.getString("Canvas", "");
+            byte[] imageAsBytes = Base64.decode(encoded.getBytes(), Base64.DEFAULT);
+            Bitmap bm = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+            customCanvas.mCanvas.drawBitmap(bm, 0,0,customCanvas.mPaint);
+            Toast.makeText(getApplicationContext(), "Image has been loaded", Toast.LENGTH_SHORT).show();
         }
     }
 }

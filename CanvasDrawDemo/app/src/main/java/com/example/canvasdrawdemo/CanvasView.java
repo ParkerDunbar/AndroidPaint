@@ -34,8 +34,8 @@ import java.util.UUID;
 // Code from https://examples.javacodegeeks.com/android/core/graphics/canvas-graphics/android-canvas-example/
 
 public class CanvasView extends View {
-    private Bitmap mBitmap;
-    private Canvas mCanvas;
+    public Bitmap mBitmap;
+    public Canvas mCanvas;
     private Path mPath;
     public Paint mPaint, canvasPaint;
     private float mX, mY;
@@ -91,15 +91,9 @@ public class CanvasView extends View {
 
     public void clearCanvas() {
         mPath.reset();
+        mBitmap = Bitmap.createBitmap(getWidth(), getHeight(),Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mBitmap);
         invalidate();
-    }
-
-    public void saveCanvas(CanvasView canvas) {
-
-    }
-
-    public void loadCanvas(){
-
     }
 
     // when ACTION_UP stop touch
