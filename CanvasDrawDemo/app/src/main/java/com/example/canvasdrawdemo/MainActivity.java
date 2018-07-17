@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.session.PlaybackState;
 import android.provider.MediaStore;
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         customCanvas.setBackgroundColor(Color.WHITE);
         sharedPreferences = getSharedPreferences("canvasPref", Context.MODE_PRIVATE);
 
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+
         //Color
         Spinner colorSpinner = (Spinner) findViewById(R.id.color_spinner);
         colorSpinner.setOnItemSelectedListener(this);
@@ -52,6 +58,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(this, R.array.size_array, android.R.layout.simple_spinner_item);
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(sizeAdapter);
+        //Shapes
+        Spinner shapeSpinner = (Spinner) findViewById(R.id.shape_spinner);
+        shapeSpinner.setOnItemSelectedListener(this);
+        ArrayAdapter<CharSequence> shapeAdapter = ArrayAdapter.createFromResource(this, R.array.shape_array, android.R.layout.simple_spinner_item);
+        shapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        shapeSpinner.setAdapter(shapeAdapter);
+
+        Button background = (Button) findViewById(R.id.set_background);
+        background.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                customCanvas.setBackgroundColor();
+            }
+        });
 
         Button eraser = (Button) findViewById(R.id.erase);
         eraser.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 int newBrushSize = Integer.parseInt(size);
                 customCanvas.setSize(newBrushSize);
                 break;
+            case R.id.shape_spinner:
+                String shape = (String) arg0.getItemAtPosition(position);
+                customCanvas.setShape(shape);
         }
     }
 

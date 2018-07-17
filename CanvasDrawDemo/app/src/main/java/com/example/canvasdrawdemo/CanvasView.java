@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,6 +41,9 @@ public class CanvasView extends View {
     public Paint mPaint, canvasPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
+    private boolean shapeMode = false;
+    private String drawShape;
+    private int eraserColor = -1;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -89,12 +93,15 @@ public class CanvasView extends View {
         }
     }
 
+
     public void clearCanvas() {
         mPath.reset();
         mBitmap = Bitmap.createBitmap(getWidth(), getHeight(),Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
         invalidate();
     }
+
+
 
     // when ACTION_UP stop touch
     private void upTouch() {
@@ -111,6 +118,11 @@ public class CanvasView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if(shapeMode){
+                    if(drawShape.equals("Circle")) {
+                        mCanvas.drawCircle(x, y, mPaint.getStrokeWidth(), mPaint);
+                    }
+                }
                 startTouch(x, y);
                 invalidate();
                 break;
@@ -129,7 +141,6 @@ public class CanvasView extends View {
     public void setColor(String color) {
         invalidate();
         mPaint.setColor(Color.parseColor(color));
-
     }
 
     public void setSize(int size) {
@@ -137,6 +148,26 @@ public class CanvasView extends View {
     }
 
     public void setEraser() {
-        mPaint.setColor(Color.WHITE);
+        if(eraserColor == -1) {
+            mPaint.setColor(Color.WHITE);
+        }
+        else {
+            mPaint.setColor(eraserColor);
+        }
+    }
+
+    public void setShape(String shape) {
+        if(shape.equals("Circle")) {
+            shapeMode = true;
+            drawShape = shape;
+        }
+        else {
+            shapeMode = false;
+        }
+    }
+
+    public void setBackgroundColor() {
+        this.setBackgroundColor(mPaint.getColor());
+        eraserColor = mPaint.getColor();
     }
 }
