@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Canvas Draw Demo</string>
+    <string name="picker">Picker</string>
+    <string name="erase">Erase</string>
 </resources>
