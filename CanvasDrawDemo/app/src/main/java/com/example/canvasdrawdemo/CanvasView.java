@@ -7,44 +7,36 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 // Code from https://examples.javacodegeeks.com/android/core/graphics/canvas-graphics/android-canvas-example/
 
 public class CanvasView extends View {
-
-    public int width;
-    public int height;
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
-    Context context;
-    private Paint mPaint;
+    public Paint mPaint, canvasPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
-        context = c;
-
-        // we set a new Path
         mPath = new Path();
-
-        // and we set a new Paint with the desired attributes
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.BLACK);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeWidth(4f);
+        mPaint.setStrokeWidth(5);
+        canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
     // override onSizeChanged
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         // your Canvas will draw onto the defined Bitmap
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
@@ -55,6 +47,7 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // draw the mPath with the mPaint on the canvas when onDraw
+        canvas.drawBitmap(mBitmap, 0, 0, canvasPaint);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -76,14 +69,11 @@ public class CanvasView extends View {
         }
     }
 
-    public void clearCanvas() {
-        mPath.reset();
-        invalidate();
-    }
-
     // when ACTION_UP stop touch
     private void upTouch() {
         mPath.lineTo(mX, mY);
+        mCanvas.drawPath(mPath, mPaint);
+        mPath.reset();
     }
 
     //override the onTouchEvent
@@ -107,5 +97,19 @@ public class CanvasView extends View {
                 break;
         }
         return true;
+    }
+
+    public void setColor(String color) {
+        invalidate();
+        mPaint.setColor(Color.parseColor(color));
+
+    }
+
+    public void setSize(int size) {
+        mPaint.setStrokeWidth(size);
+    }
+
+    public void setEraser() {
+        mPaint.setColor(Color.WHITE);
     }
 }

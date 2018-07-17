@@ -60,30 +60,30 @@
                 android:orientation="horizontal">
 
                 <Spinner
-                    android:id="@+id/spinner6"
+                    android:id="@+id/color_spinner"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
                 <Spinner
-                    android:id="@+id/spinner5"
+                    android:id="@+id/size_spinner"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
                 <Button
-                    android:id="@+id/button5"
+                    android:id="@+id/picker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="@string/picker" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/erase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:text="@string/erase" />
             </LinearLayout>
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
